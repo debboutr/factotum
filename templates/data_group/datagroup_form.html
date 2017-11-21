@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block content %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'core/bs4_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary" href="#">Cancel</a>
+    </form>
+{% endblock %}
+<!-- {% url 'data_source_detail' %} -->

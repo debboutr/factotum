@@ -8,4 +8,5 @@ urlpatterns = [
 	url(r'^datasource/new$', views.data_source_create, name='data_source_new'),
 	url(r'^datasource/edit/(?P<pk>\d+)$', views.data_source_update, name='data_source_edit'),
 	url(r'^datasource/delete/(?P<pk>\d+)$', views.data_source_delete, name='data_source_delete'),
+	url(r'^datagroup/(?P<pk>\d+)/new$', views.data_group_create, name='data_group_new'),
 ]
