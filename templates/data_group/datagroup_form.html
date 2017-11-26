@@ -4,7 +4,12 @@
         {% csrf_token %}
         {% include 'core/bs4_form.html' with form=form %}
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a class="btn btn-secondary" href="{% url "data_group_detail" object.id %}">Cancel</a>
+        <a class="btn btn-secondary" href="{% if object.exists == 'True' %}
+                                              {% url "data_group_detail" object.id %}
+                                           {% else %}
+                                           {% url "data_source_detail" object.id %}
+                                           {% endif %}">Cancel</a>
+       <h2>{{ object.exists }}</h2>                                              
     </form>
 {% endblock %}
 

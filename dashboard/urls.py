@@ -9,7 +9,7 @@ urlpatterns = [
 	url(r'^datasource/edit/(?P<pk>\d+)$', views.data_source_update, name='data_source_edit'),
 	url(r'^datasource/delete/(?P<pk>\d+)$', views.data_source_delete, name='data_source_delete'),
 	url(r'^datagroup/new$', views.data_group_create, name='data_group_new'),
-	url(r'^datagroup/(?P<pk>\d+)$', views.data_group_dets, name='data_group_detail'),
+	url(r'^datagroup/(?P<pk>\d+)$', views.data_group_detail, name='data_group_detail'),
 	url(r'^datagroup/edit/(?P<pk>\d+)$', views.data_group_update, name='data_group_edit'),
 	url(r'^datagroup/delete/(?P<pk>\d+)$', views.data_group_delete, name='data_group_delete'),
 
