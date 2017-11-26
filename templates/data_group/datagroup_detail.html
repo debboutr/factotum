@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h1>
+    <span>{{ datagroup.name }}</span>
+    <div class="btn-group float-lg-right" role="group" aria-label="Datagroup Modification">
+        <a class="btn btn-success btn-sm" role="button" title="edit" href="{% url "data_group_edit" datagroup.id %}">
+            <span class="oi oi-pencil"></span> </a>
+        <a class="btn btn-danger btn-sm" role="button" title="delete"
+           href="{% url "data_group_delete" datagroup.id %}">
+            <span class="oi oi-trash"></span> </a>
+    </div>
+</h1>
+</br>
+
+<dl class="row">
+    <dt class="col-sm-5">Description</dt>
+    <dd class="col-sm-7">{{ datagroup.description }}</dd>
+    <dt class="col-sm-5">Dowloaded By</dt>
+    <dd class="col-sm-7">{{ datagroup.download_by }}</dd>
+    <dt class="col-sm-5">Date Downloaded</dt>
+    <dd class="col-sm-7">{{ datagroup.download_date }}</dd>
+    <dt class="col-sm-5">Scraper Script</dt>
+    <dd class="col-sm-7">{{ datagroup.scrape_script }}</dd>
+</dl>
+</br>
+<a href="#">registered_records.csv</a>
+</br>
+<h1>
+    <a class="btn btn-primary" role="button" href="#">Register Records</a>
+    <a class="btn btn-primary" role="button" href="#">Upload Records</a>
+    <a class="btn btn-primary" role="button" href="#">Download PDF Records</a>
+    <a class="btn btn-primary" role="button" href="#">Upload Extracted Text</a>
+</h1>
+
+{% endblock %}
+
+<!-- {% url 'data_source_detail' %} -->

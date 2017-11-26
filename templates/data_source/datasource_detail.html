@@ -36,6 +36,45 @@
     </dl>
 
     <h1>
-        <a class="btn btn-primary" role="button" href="{% url "data_group_new" object.id %}">Add Data Group</a>
+        <a class="btn btn-primary" role="button" href="{% url "data_group_new" %}">Add Data Group</a>
     </h1>
+
+    <h2>Data Groups</h2>
+
+    <table class = "table table-hover">
+
+   <thead>
+      <tr>
+         <th>Name</th>
+         <th>Downloaded By</th>
+         <th>Download Date</th>
+         <th>Scraper Script</th>
+      </tr>
+   </thead>
+
+   <tbody>
+   {% for data_group in datagroup_list %}
+      <tr>
+         <td>{{data_group.name}}</td>
+         <td>{{data_group.download_by}}</td>
+         <td>{{data_group.download_date}}</td>
+         <td>{{data_group.scrape_script}}</td>
+         <td class="float-sm-right">
+          <div class="btn-group">
+          <a class="btn btn-info btn-sm" role="button" title="details"
+             href="{% url "data_group_detail" data_group.id %}">
+              <span class="oi oi-info"></span> </a>
+          <a class="btn btn-success btn-sm" role="button" title="edit"
+             href="{% url "data_group_edit" data_group.id %}">
+              <span class="oi oi-pencil"></span> </a>
+          <a class="btn btn-danger btn-sm" role="button" title="delete"
+             href="{% url "data_group_delete" data_group.id %}">
+              <span class="oi oi-trash"></span> </a>
+          </div>
+         </td>
+      </tr>
+   {% endfor %}
+   </tbody>
+
+</table>
 {% endblock %}
