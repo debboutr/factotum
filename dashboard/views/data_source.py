@@ -123,7 +123,8 @@ def data_group_update(request, pk, template_name='data_group/datagroup_form.html
 @login_required()
 def data_group_delete(request, pk, template_name='data_source/datasource_confirm_delete.html'):
 	data_group = get_object_or_404(DataGroup, pk=pk)
+	pk = data_group.datasource.id
 	if request.method == 'POST':
 		data_group.delete()
-		return redirect('data_source_list')
+		return HttpResponseRedirect(reverse('data_source_detail', kwargs={'pk': pk}))
 	return render(request, template_name, {'object': data_group})
