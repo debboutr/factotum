@@ -1,73 +1,41 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.db.models import Max
-from django.views.generic import TemplateView
+from django.views.generic import *
 
 from dashboard.views import *
 from dashboard.models import DataSource, DataGroup
 from dashboard.forms import DataSourceForm, DataGroupForm
 
-# @login_required()
-# def data_source_list(request, template_name='data_source/datasource_list.html'):
-# 	datasource = DataSource.objects.all()
-# 	data = {}
-# 	data['object_list'] = datasource
-# 	return render(request, template_name, data)
 
-class DS_List_View(TemplateView):
+class DS_List_View(ListView):
 	template_name = 'data_source/datasource_list.html'
-	def get_context_data(self, **kwargs):
-		print(self.kwargs)
-		context = super(DS_List_View, self).get_context_data(**kwargs)
-		context['object_list'] = DataSource.objects.all()
-		return context
-
-# @login_required()
-# def data_source_detail(request, pk, template_name='data_source/datasource_detail.html'):
-# 	datasource = get_object_or_404(DataSource, pk=pk, )
-# 	datagroup_list = DataGroup.objects.filter(datasource=pk)
-# 	request.session['datasource_title'] = datasource.title
-# 	request.session['datasource_pk'] = datasource.pk
-# 	#print(datasource.title,'|',datasource.pk)
-# 	context = {
-# 		'object': datasource,
-# 		'datagroup_list': datagroup_list,
-# 	}
-# 	return render(request, template_name, context)
-
-class DS_View(TemplateView):
 	model = DataSource
+
+class DS_View(DetailView):
 	template_name='data_source/datasource_detail.html'
-	def get_context_data(self, **kwargs):
-		context = super(DS_View, self).get_context_data(**kwargs)
-		pk = self.kwargs['pk']
-		context['object'] = get_object_or_404(DataSource, pk=pk, )
-		context['datagroup_list'] = DataGroup.objects.filter(datasource=pk)
-		return context
+	model = DataSource
 
-
-@login_required()
-def data_source_create(request, template_name='data_source/datasource_form.html'):
-	form = DataSourceForm(request.POST or None)
-	if form.is_valid():
+class DS_Create_View(FormView):
+	template_name = 'data_source/datasource_form.html'
+	form_class = DataSourceForm
+	success_url = reverse_lazy('data_source_list')
+	def form_valid(self, form):
 		form.save()
-		return redirect('data_source_list')
-	return render(request, template_name, {'form': form})
+		return super(DS_Create, self).form_valid(form)
 
-
-@login_required()
-def data_source_update(request, pk, template_name='data_source/datasource_form.html'):
-	datasource = get_object_or_404(DataSource, pk=pk)
-	form = DataSourceForm(request.POST or None, instance=datasource)
-	if form.is_valid():
-		datasource.updated_at = datetime.now()
+class DS_Update_View(UpdateView):
+	model = DataSource
+	template_name = 'data_source/datasource_form.html'
+	form_class = DataSourceForm
+	success_url = reverse_lazy('data_source_list')
+	def form_valid(self, form):
 		form.save()
-		return redirect('data_source_list')
-	return render(request, template_name, {'form': form})
-
+		return super(DS_Update_View, self).form_valid(form)
 
 @login_required()
 def data_source_delete(request, pk, template_name='data_source/datasource_confirm_delete.html'):
@@ -76,6 +44,9 @@ def data_source_delete(request, pk, template_name='data_source/datasource_confir
 		datasource.delete()
 		return redirect('data_source_list')
 	return render(request, template_name, {'object': datasource})
+
+
+
 
 @login_required()
 def data_group_create(request, template_name='data_group/datagroup_form.html'):
@@ -99,10 +70,6 @@ def data_group_create(request, template_name='data_group/datagroup_form.html'):
 	print(DataGroup.objects.all().aggregate(Max('id'))['id__max'])
 
 	return render(request, template_name, {'form': form, 'object': obj})
-
-# @login_required()
-# def data_group_list(request, template_name='data_group/datagroup_form.html'):
-# 	pass
 
 @login_required()
 def data_group_detail(request, pk, template_name='data_group/datagroup_detail.html'):
