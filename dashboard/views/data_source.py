@@ -1,46 +1,52 @@
-from django.shortcuts import render, redirect, get_object_or_404, reverse
-from django.forms import ModelForm
-from django.contrib.auth.decorators import login_required
-from dashboard.views import *
-from dashboard.models import DataSource, DataGroup
 from datetime import datetime
+
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.db.models import Max
+from django.views.generic import TemplateView
 
-class DataSourceForm(ModelForm):
-	class Meta:
-		model = DataSource
-		fields = ['title', 'url', 'estimated_records', 'type', 'description']
+from dashboard.views import *
+from dashboard.models import DataSource, DataGroup
+from dashboard.forms import DataSourceForm, DataGroupForm
 
-class DataGroupForm(ModelForm):
-	class Meta:
-		model = DataGroup
-		fields = ['name', 'description', 'datasource', 'download_by', 'download_date', 'scrape_script']
-	def __init__(self, *args, **kwargs):
-		self.user = kwargs.pop('user', None)
-		super(DataGroupForm, self).__init__(*args, **kwargs)
+# @login_required()
+# def data_source_list(request, template_name='data_source/datasource_list.html'):
+# 	datasource = DataSource.objects.all()
+# 	data = {}
+# 	data['object_list'] = datasource
+# 	return render(request, template_name, data)
 
+class DS_List_View(TemplateView):
+	template_name = 'data_source/datasource_list.html'
+	def get_context_data(self, **kwargs):
+		print(self.kwargs)
+		context = super(DS_List_View, self).get_context_data(**kwargs)
+		context['object_list'] = DataSource.objects.all()
+		return context
 
-@login_required()
-def data_source_list(request, template_name='data_source/datasource_list.html'):
-	datasource = DataSource.objects.all()
-	data = {}
-	data['object_list'] = datasource
-	return render(request, template_name, data)
+# @login_required()
+# def data_source_detail(request, pk, template_name='data_source/datasource_detail.html'):
+# 	datasource = get_object_or_404(DataSource, pk=pk, )
+# 	datagroup_list = DataGroup.objects.filter(datasource=pk)
+# 	request.session['datasource_title'] = datasource.title
+# 	request.session['datasource_pk'] = datasource.pk
+# 	#print(datasource.title,'|',datasource.pk)
+# 	context = {
+# 		'object': datasource,
+# 		'datagroup_list': datagroup_list,
+# 	}
+# 	return render(request, template_name, context)
 
-
-@login_required()
-def data_source_detail(request, pk, template_name='data_source/datasource_detail.html'):
-	datasource = get_object_or_404(DataSource, pk=pk, )
-	datagroup_list = DataGroup.objects.filter(datasource=pk)
-	request.session['datasource_title'] = datasource.title
-	request.session['datasource_pk'] = datasource.pk
-	#print(datasource.title,'|',datasource.pk)
-	context = {
-		'object': datasource,
-		'datagroup_list': datagroup_list,
-	}
-	return render(request, template_name, context)
+class DS_View(TemplateView):
+	model = DataSource
+	template_name='data_source/datasource_detail.html'
+	def get_context_data(self, **kwargs):
+		context = super(DS_View, self).get_context_data(**kwargs)
+		pk = self.kwargs['pk']
+		context['object'] = get_object_or_404(DataSource, pk=pk, )
+		context['datagroup_list'] = DataGroup.objects.filter(datasource=pk)
+		return context
 
 
 @login_required()
